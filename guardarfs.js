@@ -15,6 +15,16 @@ function guardarPeticion(request, contador){
     //console.log(norm.get_tokens(cabeceras));
 }
 
+//Funcion que genera el documento SQLi
+function generaDocumentoSqli(){
+
+}
+
+//Funcion que genera el documento normal
+function generaDocumentoNormal(){
+
+}
+
 //Funcion que recibe una URL y verifica si es una petición para obtener algún archivo
 //con las extenciones que se encuentran en la variable cadena
 //retorna verdadero o falso
