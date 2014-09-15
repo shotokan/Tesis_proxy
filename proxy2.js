@@ -1,7 +1,7 @@
 var http = require('http'),
     httpProxy = require('./http-proxy'),
     guardar = require('./guardarfs'),
-    normalizar = require('./token');
+    normalizar = require('./token'),
     docs = require('./documentos');
 var contador = 0;
     

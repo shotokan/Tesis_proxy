@@ -26,7 +26,11 @@ function tokens(request){
 	//console.log(tokenizer.tokenize("my dog hasn't any fleas."));
 	return arrayTokens;
 }
-
+function tokens2(doc){
+	tokenizer = new natural.WordPunctTokenizer();
+	var arrayTokens = tokenizer.tokenize(doc);
+	return arrayTokens;
+}
 /*
 *Funcion minúsculas: recibe el texto de las cabeceras HTTP, lo transforma a minúsculas
 *y lo retorna
@@ -47,6 +51,16 @@ function clearHeaders(arrayCabeceras){
 	return cabeceras;
 }
 
+/*
+* Función para eliminar los espacios en blanco del array generado al realizar la tokenización
+* del documento
+*/
+function trim(cadena){
+	return cadena.replace(" ","");
+}
+
 exports.tokens = tokens;
 exports.minusculas = minusculas;
 exports.clearHeaders = clearHeaders;
+exports.tokens2 = tokens2;
+exports.trim = trim;

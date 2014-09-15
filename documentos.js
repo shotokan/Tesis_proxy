@@ -1,7 +1,5 @@
 var natural = require('natural'),
-	 TfIdf = natural.TfIdf,
-    tfidf = new TfIdf();
-    var _ = require("underscore")._;
+fs = require('fs');
 
 function pesos(cabeceras){
 	console.log("Es un ARRAY? " + _.isArray(cabeceras));
@@ -16,8 +14,23 @@ function listarPesos(){
 	});
 	tfidf.listTerms(0 /*document index*/).forEach(function(item) {
     console.log(item.term + ': ' + item.tfidf);
-});
+	});
+}
+
+function leerDocumento(tipo){
+	if (tipo === "Sqli"){
+		var archivo = fs.readFileSync('./Sqli/Sqli.txt', 'utf8');
+		//console.log('---- Contenido SQLi: ' + archivo + "-----------");
+		//fs.close();
+		return archivo;
+	}else if(tipo == "Normal"){
+		var archivo = fs.readFileSync('./Normal/Normal.txt', 'utf8');
+		//console.log('---- Contenido SQLi: ' + archivo + "-----------");
+		//fs.close();
+		return archivo;		
+	}
 }
 
 exports.pesos = pesos;
 exports.listarPesos = listarPesos;
+exports.leerDocumento = leerDocumento;

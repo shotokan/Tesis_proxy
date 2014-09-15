@@ -10,14 +10,14 @@ function guardarPeticion(request, contador){
   //var nomb = "./HTTPNormal/normal" + contador + "-" + fecha + ".txt";
    
   var cabeceras = request.method + " " + request.url;
-  var body = "\n";
+  //var body = "\n";
   for(var h in request.headers){
     cabeceras += " " + h + ": " + request.headers[h];
   }
   fs.writeFile(nomb, cabeceras, 'utf8',function(error) {
     console.log("Cabeceras: Se ha escrito correctamente");
-    generarDocSQLi(cabeceras + "\n");
-  //generarDocNormal(cabeceras + "\n");
+    generarDocSQLi(cabeceras + " ");
+  //generarDocNormal(cabeceras + " ");
   });
    //console.log(norm.get_tokens(cabeceras));
 }
@@ -29,15 +29,15 @@ function guardarPeticionPost(request, contador, post){
    //var nomb = "./HTTPNormal/normal" + contador + "-" + fecha + ".txt";
    var nomb = "./HTTPSQLi/archivoSqli-" + contador + "-" + fecha + ".txt";
    var cabeceras = request.method + " " + request.url;
-   var body = "\n";
+   //var body = "\n";
    for(var h in request.headers){
     cabeceras += " " + h + ": " + request.headers[h];
    }
-   cabeceras += "\n" + post;
+   cabeceras += " " + post;
    fs.writeFile(nomb, cabeceras, 'utf8',function(error) {
      console.log("Cabeceras: Se ha escrito correctamente");
-     generarDocSQLi(cabeceras + "\n");
-   //generarDocNormal(cabeceras + "\n");
+     generarDocSQLi(cabeceras + " ");
+   //generarDocNormal(cabeceras + " ");
    });
    //console.log(norm.get_tokens(cabeceras));
 }
