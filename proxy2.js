@@ -19,20 +19,31 @@ http.createServer(function (req, res) {
     // No se almacenan peticiones para archivos con las extenciones de la variable cadena
   console.log("Llamada a server");
   if(!guardar.verifica(req.url)){
-  		guardar.guardarPeticion(req, contador);
-  		contador = contador + 1;
-  		//console.log(typeof(req));
-  		//console.log(normalizar.minusculas("HoLA Que OnDA"));
-  		y = normalizar.tokens(req);
-  		docs.pesos(y);
-  		docs.listarPesos();
-  	}else{
-  		console.log(req.url);
-  		console.log("No se ha podido guardar...");
-  	}
+  		if (req.method == 'POST') {
+         var parametros = "";
+         var body = "";
+         req.on('data', function (chunk) {
+           body += chunk;
+           //parametros += " \n" + body;
+           });
+           req.on('end', function () {
+           guardar.guardarPeticionPost(req, contador, body);
+           // use post['blah'], etc.
+         });
+         
+      }else{
+         guardar.guardarPeticion(req, contador);
+      }
+      contador = contador + 1;
+   }else{
+     console.log(req.url);
+     console.log("No se ha podido guardar...");
+  }
+
+    //docs.conectarMongo();
   //console.log(req.headers['host']);
   
-   proxy.web(req, res, { target: "http://www.itmerida.mx" });
+   proxy.web(req, res, { target: "http://www.google.com.mx" });
 }).listen(8000);
 
 //
