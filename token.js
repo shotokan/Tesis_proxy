@@ -11,26 +11,19 @@ var natural = require('natural');
 
 /*
 *Funcion tokens, recibe cabeceras y las divide
-*en tokens, haciendo uso de las funciones de la libreria naturalNode
-*Se devuelve un arreglo.
+*en tokens, haciendo uso de las funciones de la libreria natural Node
+*Se devuelve un arreglo, con las cadenas convertidas a minúsculas
+*y sin espacios.
 */
-function tokens(request){
-	tokenizer = new natural.WordPunctTokenizer();
-	var cabeceras = request.method + " " + request.url;
-	var body = "\n";
-   for(var h in request.headers){
-      cabeceras += " " + h + ": " + request.headers[h];
-   }
-	var arrayTokens = tokenizer.tokenize(cabeceras.toString());
-	console.log("Cabeceras HTTP-String: "+ arrayTokens);
-	//console.log(tokenizer.tokenize("my dog hasn't any fleas."));
-	return arrayTokens;
-}
-function tokens2(doc){
+function tokens(doc){
 	tokenizer = new natural.WordPunctTokenizer();
 	var arrayTokens = tokenizer.tokenize(doc);
+	for(var c in arrayTokens){
+		arrayTokens[c] = trim(arrayTokens[c].toLowerCase());
+	}
 	return arrayTokens;
 }
+
 /*
 *Funcion minúsculas: recibe el texto de las cabeceras HTTP, lo transforma a minúsculas
 *y lo retorna
@@ -62,5 +55,4 @@ function trim(cadena){
 exports.tokens = tokens;
 exports.minusculas = minusculas;
 exports.clearHeaders = clearHeaders;
-exports.tokens2 = tokens2;
 exports.trim = trim;
