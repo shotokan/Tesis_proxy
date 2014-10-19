@@ -3,10 +3,10 @@ var norm = require('./normalizacion');
 
 
 //Funcion que guarda las cabeceras de la peticion http en un archivo txt
-function guardarPeticion(request, contador){
+function guardarPeticion(request, contador, path){
   var f = new Date();
-  var fecha = f.getDate() + "-" + (f.getMonth() + 1) + "-" + f.getFullYear()
-  var nomb = "./HTTPSQLi/archivoSqli-" + contador + "-" + fecha + ".txt";
+  var fecha = f.getDate() + "-" + (f.getMonth() + 1) + "-" + f.getFullYear()+"-"+f.getHours()+f.getMinutes()+f.getSeconds()+f.getMilliseconds();
+  var nomb = "./"+path + "/archivoSqli-" + contador + "-" + fecha + ".txt";
   //var nomb = "./HTTPNormal/normal" + contador + "-" + fecha + ".txt";
    
   var cabeceras = request.method + " " + request.url;
@@ -23,11 +23,11 @@ function guardarPeticion(request, contador){
 }
 
 //Funcion que guarda las cabeceras y argumentos post de la peticion http en un archivo txt
-function guardarPeticionPost(request, contador, post){
+function guardarPeticionPost(request, contador, post, path){
    var f = new Date();
-   var fecha = f.getDate() + "-" + (f.getMonth() + 1) + "-" + f.getFullYear()
+   var fecha = f.getDate() + "-" + (f.getMonth() + 1) + "-" + f.getFullYear()+"-"+f.getHours()+f.getMinutes()+f.getSeconds()+f.getMilliseconds();
    //var nomb = "./HTTPNormal/normal" + contador + "-" + fecha + ".txt";
-   var nomb = "./HTTPSQLi/archivoSqli-" + contador + "-" + fecha + ".txt";
+   var nomb = "./"+path + "/archivoSqli-" + contador + "-" + fecha + ".txt";
    var cabeceras = request.method + " " + request.url;
    //var body = "\n";
    for(var h in request.headers){

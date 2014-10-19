@@ -18,6 +18,42 @@ function listarPesos(){
 	});
 }
 
+//Obtener ultimo documento guardado
+function ultimoDocumento(tipo){
+	if (tipo === "Sqli"){
+		var archivo = fs.readFileSync('./UltimoDocumento/ultimoSqli.txt', 'utf8');
+		//console.log('---- Contenido SQLi: ' + archivo + "-----------");
+		//fs.close();
+		return archivo;
+	}else if(tipo == "Normal"){
+		var archivo = fs.readFileSync('./UltimoDocumento/ultimoNormal.txt', 'utf8');
+		//console.log('---- Contenido SQLi: ' + archivo + "-----------");
+		//fs.close();
+		return archivo;		
+	}
+}
+
+//guarda el ultimo numero del documento guardaddo
+function guardarUltimoDocumento(tipo, numero){
+	if (tipo === "Sqli"){
+		var nomb = "./UltimoDocumento/ultimoSQLi.txt";
+		//console.log('---- Contenido SQLi: ' + archivo + "-----------");
+		//fs.close();
+		 fs.writeFile(nomb, numero, 'utf8',function(error) {
+		 	console.log('Numero: ' + numero);
+		 });
+		//return archivo;
+	}else if(tipo == "Normal"){
+		var nomb = "./UltimoDocumento/ultimoNormal.txt";
+		fs.writeFile(nomb, numero, 'utf8',function(error) {
+		 	console.log('Numero: ' + numero);
+		 });
+		//console.log('---- Contenido SQLi: ' + archivo + "-----------");
+		//fs.close();
+		//return archivo;		
+	}
+}
+
 function leerDocumento(tipo){
 	if (tipo === "Sqli"){
 		var archivo = fs.readFileSync('./Sqli/Sqli.txt', 'utf8');
@@ -97,4 +133,6 @@ exports.pesos = pesos;
 exports.listarPesos = listarPesos;
 exports.leerDocumento = leerDocumento;
 exports.verificarTermino = verificarTermino;
+exports.ultimoDocumento = ultimoDocumento;
+exports.guardarUltimoDocumento = guardarUltimoDocumento;
 //exports.insertar = insertar;
