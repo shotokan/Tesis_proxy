@@ -68,19 +68,23 @@ function verificarTermino(term, tipo){
 /*
 * Se inserta el nuevo término
  */
-function insertar(db, term, tipo){
-	var document = {termino: term, cantidad: 1, tf: 0, idf: 0, tf_idf: 0, norma: 0};
-	if(tipo === "SQLi"){
-		db.collection("terminos_sqli").insert(document, {w: 1}, function(err, records){
-	  		console.log("Record added as "+records[0]._id);
-	  		db.close();
-		});
-	}else{
-		db.collection("terminos_normal").insert(document, {w: 1}, function(err, records){
-	  		console.log("Record added as "+records[0]._id);
-	  		db.close();
-		});
-	}
+function insertar(db, term, tipo, dato){
+	var document = {termino: term, cantidad: 1, tf: 0, idf: 0, tf_idf: 0, norma: 0, documentos: {doc1:true, doc2:false}};
+	MongoClient.connect('mongodb://localhost:27017/demo', function(err, db){
+		if(err) throw err;
+		if(tipo === "SQLi"){
+
+			db.collection("terminos_sqli").insert(dato, {w: 1}, function(err, records){
+		  		console.log("Record added as "+records[0]._id);
+		  		db.close();
+			});
+		}else{
+			db.collection("terminos_normal").insert(dato, {w: 1}, function(err, records){
+		  		console.log("Record added as "+records[0]._id);
+		  		db.close();
+			});
+		}
+	});
 
 }
 

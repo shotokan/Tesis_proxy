@@ -3,7 +3,7 @@ var guardar = require('./guardarfs'),
     docs = require('./documentos');
 var MongoClient = require('mongodb').MongoClient;
 
-function generarPesos(){
+function terminos(){
 
 	var archivo = docs.leerDocumento("Sqli");
 	var arrays = normalizar.tokens(archivo);
@@ -56,10 +56,59 @@ function generarPesos(){
 	}
 	console.log(pesos);
 	console.log(band);
+	generaPesos(pesos, cont2);
 	return pesos;
 }
-
 //id, termino, Cantidad, peso tf, peso IDF, valor TF-IDF, Norma 
+function generaPesos(terminos, cantidad){
+	var documento = [];
+	var arrayTFIDF = [];
+	for(var t in terminos){
+		var peso_tf = TF(terminos[t][1], cantidad);
+		var peso_idf = IDF(2/1);
+		var peso_tf_idf = TF_IDF(terminos[t][1], peso_idf);
+		arrayTFIDF[t] = peso_tf_idf;
+		var simi = Norma(arrayTFIDF);
+		documento[t] = {termino: terminos[t][0], cantidad: terminos[t][1], tf: peso_tf, idf: peso_idf, tf_idf: peso_tf_idf, norma:simi};
+		insertar("SQLi", documento[t]);
+	}
+	console.log('Inicia el documento....');
+console.log(documento);
+return documento;
+
+}
+
+function TF(terminoCant, cantidadDoc){
+
+		tf = terminoCant/cantidadDoc;
+		return tf;	
+}
+
+function IDF(documentos){
+	//idf = Math.log(documentos);
+	idf = log2(2, documentos);
+	return idf;
+}
+
+function Norma(terminos){
+	var suma=0;
+	for(var t in terminos){
+		suma = suma + Math.pow(terminos[t],2);
+	}
+	var raiz = Math.sqrt(suma);
+	return raiz;
+}
+
+function log2(b, n) {  
+    return Math.log(n) / Math.log(b);  
+}
+
+function TF_IDF(tf, idf){
+	tf_idf = tf * idf;
+	return tf_idf;
+}
+
+
 //
 function guardarPesos(pesosArray, tipo){
 	MongoClient.connect('mongodb://localhost:27017/demo', function(err, db){
@@ -93,18 +142,19 @@ function guardarPesos(pesosArray, tipo){
 
 /*
 * Se inserta el nuevo término
- */
-function insertar(db, term, tipo){
-	var document = {termino: term, cantidad: 1, tf: 0, idf: 0, tf_idf: 0, norma: 0};
-	MongoClient.connect('mongodb://localhost:27017/Tesis', function(err, db){
+* id, termino, Cantidad, peso tf, peso IDF, valor TF-IDF, Norma 
+*/
+function insertar(tipo, dato){
+	//var document = {termino: term, cantidad: 1, tf: 0, idf: 0, tf_idf: 0, norma: 0};
+	MongoClient.connect('mongodb://localhost:27017/demoTesis', function(err, db){
 		if(err) throw err;
 		if(tipo === "SQLi"){
-			db.collection("terminos_sqli").insert(document, {w: 1}, function(err, records){
+			db.collection("terminos_sqli1").insert(dato, {w: 1}, function(err, records){
 		  		console.log("Record added as "+records[0]._id);
 		  		db.close();
 			});
 		}else{
-			db.collection("terminos_normal").insert(document, {w: 1}, function(err, records){
+			db.collection("terminos_normal").insert(dato, {w: 1}, function(err, records){
 		  		console.log("Record added as "+records[0]._id);
 		  		db.close();
 			});
@@ -113,4 +163,4 @@ function insertar(db, term, tipo){
 
 }
 
-generarPesos();
+terminos();

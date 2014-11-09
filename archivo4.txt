@@ -1,0 +1,9 @@
+GET http://192.168.253.132/WackoPicko/css/stylings.php 
+host: 192.168.253.132 
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:32.0) Gecko/20100101 Firefox/32.0 
+accept: text/css,*/*;q=0.1 
+accept-language: es-MX,es-ES;q=0.8,es-AR;q=0.7,es;q=0.5,en-US;q=0.3,en;q=0.2 
+accept-encoding: gzip, deflate 
+referer: http://192.168.253.132/WackoPicko/users/login.php 
+cookie: acopendivids=swingset,jotto,phpbb2,redmine; acgroupswithpersist=nada; PHPSESSID=e62hp1pb841f8tnc7lor3f5g22 
+connection: keep-alive

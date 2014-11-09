@@ -7,7 +7,7 @@ function guardarPeticion(request, contador, path){
   var f = new Date();
   var fecha = f.getDate() + "-" + (f.getMonth() + 1) + "-" + f.getFullYear()+"-"+f.getHours()+f.getMinutes()+f.getSeconds()+f.getMilliseconds();
   var nomb = "./"+path + "/archivoSqli-" + contador + "-" + fecha + ".txt";
-  //var nomb = "./HTTPNormal/normal" + contador + "-" + fecha + ".txt";
+  //var nomb = "./"+path +"/normal-" + contador + "-" + fecha + ".txt";
    
   var cabeceras = request.method + " " + request.url;
   //var body = "\n";
@@ -16,8 +16,8 @@ function guardarPeticion(request, contador, path){
   }
   fs.writeFile(nomb, cabeceras, 'utf8',function(error) {
     console.log("Cabeceras: Se ha escrito correctamente");
-    generarDocSQLi(cabeceras + " ");
-  //generarDocNormal(cabeceras + " ");
+   // generarDocNormal(cabeceras + " ");
+  generarDocSQLi(cabeceras + " ");
   });
    //console.log(norm.get_tokens(cabeceras));
 }
@@ -26,7 +26,7 @@ function guardarPeticion(request, contador, path){
 function guardarPeticionPost(request, contador, post, path){
    var f = new Date();
    var fecha = f.getDate() + "-" + (f.getMonth() + 1) + "-" + f.getFullYear()+"-"+f.getHours()+f.getMinutes()+f.getSeconds()+f.getMilliseconds();
-   //var nomb = "./HTTPNormal/normal" + contador + "-" + fecha + ".txt";
+   //var nomb = "./"+path +"/normal-" + contador + "-" + fecha + ".txt";
    var nomb = "./"+path + "/archivoSqli-" + contador + "-" + fecha + ".txt";
    var cabeceras = request.method + " " + request.url;
    //var body = "\n";
@@ -36,8 +36,9 @@ function guardarPeticionPost(request, contador, post, path){
    cabeceras += " " + post;
    fs.writeFile(nomb, cabeceras, 'utf8',function(error) {
      console.log("Cabeceras: Se ha escrito correctamente");
-     generarDocSQLi(cabeceras + " ");
+     //generarDocNormal(cabeceras + " ");
    //generarDocNormal(cabeceras + " ");
+   generarDocSQLi(cabeceras + " ");
    });
    //console.log(norm.get_tokens(cabeceras));
 }

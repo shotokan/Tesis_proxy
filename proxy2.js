@@ -8,6 +8,7 @@ var contador = 1;
 var f = new Date();
 var fecha = f.getDate() + (f.getMonth() + 1) +  f.getFullYear()+"-"+f.getHours()+f.getMinutes()+f.getSeconds()+f.getMilliseconds();
 path='./HTTPSQLi/'+fecha;
+//path='./HTTPNormal/'+fecha;
 fs.mkdirSync(path);
 //
 // Create your proxy server and set the target in the options.
@@ -48,12 +49,12 @@ var server = http.createServer(function (request, response) {
 
 //Envia la petición al host
 var options = {
-  host: request.headers['host'],
+  host: '192.168.253.132',//request.headers['host'],
   method: request.method,
   headers: request.headers,
   path: request.url
 };
-
+//console.log(options);
 var proxy = http.request(options, function(res) {
   // get the proxyclient response and write to the original response
     res.addListener('data', function(chunk){
