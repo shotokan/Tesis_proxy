@@ -27,7 +27,7 @@ function terminos(){
 			}
 		}*/
 		//console.log("for");
-		
+		//Verifica los términos repetidos para realizar su conteo
 		while(arrayCopy.indexOf(arrays[c]) === -1){
 			arrayCopy.push(arrays[c]);
 			while(pos != -1){
@@ -86,7 +86,7 @@ function TF(terminoCant, cantidadDoc){
 
 function IDF(documentos){
 	//idf = Math.log(documentos);
-	idf = log2(2, documentos);
+	var idf = log2(2, documentos);
 	return idf;
 }
 
