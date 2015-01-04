@@ -51,7 +51,9 @@ function clearHeaders(arrayCabeceras){
 function trim(cadena){
 	return cadena.replace(" ","");
 }
-
+function decodificarURL(peticion){
+	return decodeURIComponent(peticion);
+}
 exports.tokens = tokens;
 exports.minusculas = minusculas;
 exports.clearHeaders = clearHeaders;
