@@ -8,7 +8,7 @@ function guardarPeticion(request, contador, path){
   var fecha = f.getDate() + "-" + (f.getMonth() + 1) + "-" + f.getFullYear()+"-"+f.getHours()+f.getMinutes()+f.getSeconds()+f.getMilliseconds();
   var nomb = "./"+path + "/archivoSqli-" + contador + "-" + fecha + ".txt";
   //var nomb = "./"+path +"/normal-" + contador + "-" + fecha + ".txt";
-   
+
   var cabeceras = request.method + " " + request.url;
   //var body = "\n";
   for(var h in request.headers){
@@ -83,11 +83,14 @@ function verifica(url){
 	var cadena = /(\.{1}(png|jpeg|jpg|gif|bmp|ico|js|cur|css|mp3|mp4|pdf|docx|json|xml|swf|xls|txt))$/;
 	var re = new RegExp(cadena);
 	if(re.test(url)){
+    console.log("No se ha podido guardar...");
 		return true;
-  	}else{
-  		console.log(url);
-  		console.log("No se ha podido guardar...");
-  	}
+  }else{
+  	console.log(url);
+    console.log("ya se ha guardado " + url);
+    return false;
+
+  }
   	return false;
 }
 

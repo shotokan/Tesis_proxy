@@ -37,12 +37,17 @@ var server = http.createServer(function (request, response) {
 
     }else{
       cabeceras = clasificar.peticionGet(request);
-      console.log(cabeceras);
+      console.dir(clasificar.clasificar(cabeceras));
+      //clasificar.clasificar(cabeceras);
+    //  response.writeHead(200, { 'Content-Type': 'text/plain' });
+      //response.end('Hello world!');
+
+      //console.log(cabeceras);
     }
     contador = contador + 1;
   }else{
-    console.log(request.url);
-    console.log("No se ha podido guardar...");
+    console.log("URL pedida: " + request.url);
+    //console.log("No se ha podido guardar...");
   }
 
   //docs.conectarMongo();
@@ -59,12 +64,12 @@ var server = http.createServer(function (request, response) {
   var proxy = http.request(options, function(res) {
     // get the proxyclient response and write to the original response
     res.addListener('data', function(chunk){
-      console.log("writing response");
+      //console.log("writing response");
       response.write(chunk, 'binary');
     });
 
     res.addListener('end', function(){
-      console.log("end response");
+      //console.log("end response");
       response.end();
     });
     response.writeHead(res.statusCode, res.headers);
@@ -72,13 +77,13 @@ var server = http.createServer(function (request, response) {
 
   // intercept the request and write to proxyclient
   request.addListener('data', function(chunk){
-    console.log("new request");
+    //console.log("new request");
     proxy.write(chunk, 'binary');
 
   });
 
   request.addListener('end', function(){
-    console.log("end request");
+    //console.log("end request");
     proxy.end();
   });
 

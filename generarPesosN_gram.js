@@ -9,36 +9,49 @@ var cantidadSqli;
 var cantidadNormal;
 var normal;
 var db;
+var documentSqli = {};
+var documentNormal = {};
+
 function terminos(){
 	var d = new Date();
 	var inicioT = d.getHours() + " " +d.getMinutes() + " " + d.getSeconds() + " " + d.getMilliseconds();
 	//var normal = trigramasNormal();
 	/* -------------- Obtener datos SQLI -------------------- */
 	var archivoSqli = docs.leerDocumento("Sqli");
-	
+	console.log("LEer sqli");
 	archivoSqli = decodeURIComponent(archivoSqli);
-	
+	console.log("decodificado");
 	var tokens = normalizar.tokens(archivoSqli);
+	console.log('normalizar');
 	var triTokens = NGrams.trigrams(tokens);
+	console.log("Se obtuvo los tritokens");
+  archivoSqli = null;
 	//console.log(triTokens.length);
 	sqli = trigramasSqli(triTokens);
+	console.log('trigramas sqli');
 	console.log('Cantidad de trigramas diferentes en sqli: ' + sqli.length);
 	cantidadSqli = triTokens.length;
 	console.log('Cantidad total trigramas en doc sqli: ' + triTokens.length);
+  triTokens = null;
+  tokens = null;
 	/*------------------------ FIN SQLI -----------------*/
 
 	/* -------------- Obtener datos NORMAL -------------------- */
 	var archivoNormal = docs.leerDocumento("Normal");
-	
+console.log("LEer normal");
 	archivoNormal = decodeURIComponent(archivoNormal);
-	
+console.log("decodificado");
 	var tokensN = normalizar.tokens(archivoNormal);
+	console.log('normalizar');
 	var triTokensN = NGrams.trigrams(tokensN);
-	
+console.log("Se obtuvo los tritokens");
 	cantidadNormal = triTokensN.length;
 	normal = trigramasNormal(triTokensN);
 	console.log('Cantidad diferentes Normal: ' + normal.length);
 	console.log('Cantidad total trigramas en doc normal: ' + triTokensN.length);
+  archivoNormal = null;
+  tokensN = null;
+  triTokensN = null;
 	/*------------------------ FIN Normal -----------------*/
 
 	//console.dir(sqli);
@@ -46,8 +59,9 @@ function terminos(){
 	//console.log(sqli);
 	//console.log(normal);
 	/*------------- Se insertan los documentos SQLI a mongodb --------------*/
-	
+
 	var document = {};
+	generarDocumentoNormal(sqli);
 	/*var pop = sqli.pop();
 	console.dir(sqli.pop());
 	var tf = 0;
@@ -113,11 +127,28 @@ console.log("Inicio: " + inicioT);
 console.log("Final: " + finT);
 }
 
+function generarDocumentoNormal(trigrams){
+	for(t in trigrams){
+		console.log(t);
+	}
 
+}
+//Genera un arreglo de objetos, en el que se encuentran los valores tf, idf, tf-idf
+//la norma y la cantidad de cada trigrama
+function getTF(documento){
+  var coleccion = [];
+  var document = {};
+  var tf = 0;
+  var idf = 0;
+  var tf_idf = 0;
+  var norma = 0;
+  document = {termino: pop[0], cantidad: pop[1], tf: tf, idf: idf, tf_idf: tf_idf, norma: norma};
+
+}
 function getDocumento(tipo){
 	var document = {};
 	if(tipo === 'SQLi'){
-		
+
 		if(sqli.length > 0){
 			console.log("SQLI: " + sqli.length);
 			var pop = sqli.pop();
@@ -134,6 +165,7 @@ function getDocumento(tipo){
 					idf = IDF(2, 1);
 				}
 				tf_idf = TF_IDF(tf, idf);
+
 				return document = {termino: pop[0], cantidad: pop[1], tf: tf, idf: idf, tf_idf: tf_idf, norma: norma};
 		}else{
 			console.log("ELSE return null");
@@ -166,16 +198,16 @@ function getDocumento(tipo){
 
 /*
 * Se inserta el nuevo término
-* id, termino, Cantidad, peso tf, peso IDF, valor TF-IDF, Norma 
+* id, termino, Cantidad, peso tf, peso IDF, valor TF-IDF, Norma
 */
 function insertar(tipo, dato){
 	//var document = {termino: term, cantidad: 1, tf: 0, idf: 0, tf_idf: 0, norma: 0};
 
 	MongoClient.connect('mongodb://127.0.0.1:27017/demoTesis2', function(err, database){
-		if(err){ 
+		if(err){
 			console.log(err);
 			throw err;
-			
+
 		}else{
 			db = database;
 			if(tipo === "SQLi"){
@@ -193,7 +225,7 @@ function insertar(tipo, dato){
 function insertar2(doc){
 	console.log('insertar2');
 	db.collection("terminos_normal").insert(doc, {w: 1}, function(err, records){
-					if(err){ 
+					if(err){
 						console.log("ERROR: " + err);
 						}
 			  		console.log("Record added as Normal "+records[0]._id);
@@ -228,6 +260,7 @@ function trigramasNormal(triTokens){
 		if(t===1000){
 			break;
 		}
+    //Revisa si ya se ha realizado el conteo del trigrama seleccionado
 		band = myIndexOf(triTokens[t], trigramas, band);
 		//console.log('band '+band);
 		if(band === -1 ){
@@ -236,10 +269,11 @@ function trigramasNormal(triTokens){
 			//console.log("Trigramas2: " + trigramas);
 			//console.log("Primer tritokens");
 			//verifica si se encontró algun trigrama
-			
+
 			while(pos != -1){
 				//console.log("Segundo tritoken");
 				//console.log('pos ' +pos);
+        //Revisa cuandos trigramas iguales existen en el documento
 				pos = myIndexOf(triTokens[t], triTokens, pos);
 				//console.log("POS " + pos);
 				if (pos != -1){
@@ -257,14 +291,14 @@ function trigramasNormal(triTokens){
 
 		}
 		band = 0;
-		
+
 	}
 	//trigramas = null;
 	return pesosNormal;
 }
 
 function trigramasSqli(triTokens){
-	
+
 	//var archivo = docs.leerDocumento("Normal");
 	var trigramas=[];
 	var pos = 0;
@@ -295,7 +329,7 @@ function trigramasSqli(triTokens){
 			//console.log("Trigramas2: " + trigramas);
 			//console.log("Primer tritokens");
 			//verifica si se encontró algun trigrama
-			
+
 			while(pos != -1){
 				//console.log("Segundo tritoken");
 				//console.log('pos ' +pos);
@@ -316,7 +350,7 @@ function trigramasSqli(triTokens){
 
 		}
 		band = 0;
-		
+
 	}
 	console.log("Trigramas: " + trigramas.length);
 	//console.log("cont: " + cont);
@@ -361,7 +395,7 @@ function myIndexOf(tokens, trigramas, pos){
 function TF(terminoCant, cantidadDoc){
 
 		var tf = terminoCant/cantidadDoc;
-		return tf;	
+		return tf;
 }
 
 function IDF(numDocColeccion, aparicionDocumentos){
@@ -380,8 +414,8 @@ function Norma(terminos){
 	return raiz;
 }
 
-function log2(b, n) {  
-    return Math.log(n) / Math.log(b);  
+function log2(b, n) {
+    return Math.log(n) / Math.log(b);
 }
 
 function TF_IDF(tf, idf){

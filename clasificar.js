@@ -4,13 +4,22 @@ var normalizar = require('./normalizacion'),
 var MongoClient = require('mongodb').MongoClient;
 var NGrams = natural.NGrams;
 var db;
-function clasificar(q){
+var cantidadTrigramas;
+var sumIdf = 0;
 
+function clasificar(q){
+	//console.log(q);
 	consulta =  decodeURIComponent(q);
 	var tokens = normalizar.tokens(consulta);
 	var triTokens = NGrams.trigrams(tokens);
 	triConsulta = countTrigrams(triTokens);
 	cantidadTrigramas = triTokens.length;
+	getDoc("terminos_normal");
+	return triConsulta;
+}
+
+function generaPesos(terminos, cantidad){
+
 }
 
 function myIndexOf(tokens, trigramas, pos){
@@ -27,6 +36,59 @@ function myIndexOf(tokens, trigramas, pos){
 	}
 
 	return -1;
+}
+
+function sim(q, doc, callback){
+
+}
+
+function getDoc(coleccion){
+	MongoClient.connect('mongodb://127.0.0.1:27017/demoTesis2', function(err, database){
+		if(err){
+			console.log(err);
+			throw err;
+		}
+		var db = database;
+		var col = db.collection(coleccion);
+
+		col.find().toArray(function(err, resultado){
+			if(err){
+				console.log(err);
+				throw err;
+			}else{
+				console.dir(resultado);
+				//console.dir(resultado[0].suma);
+
+			}
+			db.close();
+
+		});
+
+	});
+}
+
+//Se obtiene la suma del dato pasado
+function getSuma(coleccion){
+	MongoClient.connect('mongodb://127.0.0.1:27017/demoTesis2', function(err, database){
+		if(err){
+			console.log(err);
+			throw err;
+		}
+		var db = database;
+		db.collection(coleccion).aggregate({$group: {_id: null, "suma":{$sum: "$idf"}}}, function(err, resultado){
+			if(err){
+				console.log(err);
+				throw err;
+			}else{
+			sumIdf = resultado[0].suma;
+			//console.dir(resultado[0].suma);
+
+			}
+			db.close();
+
+		});
+
+	});
 }
 
 function countTrigrams(triTokens){
@@ -84,7 +146,7 @@ function countTrigrams(triTokens){
 
 /* Recibir peticiones */
 
-function peticionPost(request, body){
+function peticionPost(request, post){
 	var f = new Date();
    //var fecha = f.getDate() + "-" + (f.getMonth() + 1) + "-" + f.getFullYear()+"-"+f.getHours()+f.getMinutes()+f.getSeconds()+f.getMilliseconds();
    //var nomb = "./"+path +"/normal-" + contador + "-" + fecha + ".txt";
@@ -114,7 +176,36 @@ function peticionGet(request){
 	//console.log(norm.get_tokens(cabeceras));
 }
 
+function getDocumento(trigramas){
+	var pop = sqli.pop();
+	console.dir(pop);
+	//console.dir(sqli.pop());
+	var tf = 0;
+	var idf = 0;
+	var tf_idf = 0;
+	var norma = 0;
+	tf = TF(pop[1], cantidadSqli);
+	if(myIndexOf(pop[0], normal) !== -1){
+		idf = IDF(2, 2);
+	}else{
+		idf = IDF(2, 1);
+	}
+	tf_idf = TF_IDF(tf, idf);
+	return document = {termino: pop[0], cantidad: pop[1], tf: tf, idf: idf, tf_idf: tf_idf, norma: norma};
+}
+
 /* Obtener pesos */
+function TF(terminoCant, cantidadDoc){
+
+	tf = terminoCant/cantidadDoc;
+	return tf;
+}
+
+function IDF(documentos){
+	//idf = Math.log(documentos);
+	var idf = log2(2, documentos);
+	return idf;
+}
 
 function Norma(terminos){
 	var suma=0;
@@ -137,3 +228,4 @@ function TF_IDF(tf, idf){
 //Se exportan los modulos que podrán ser accedidos desde fuera
 exports.peticionGet = peticionGet;
 exports.peticionPost = peticionPost;
+exports.clasificar = clasificar;
