@@ -13,12 +13,52 @@ function clasificar(q){
 	var tokens = normalizar.tokens(consulta);
 	var triTokens = NGrams.trigrams(tokens);
 	triConsulta = countTrigrams(triTokens);
-	cantidadTrigramas = triTokens.length;
-	getDoc("terminos_normal");
+	//cantidadTrigramas = triTokens.length;
+	cantidadTrigramas = triConsulta.length;
+	var term = [];
+	for(t in triConsulta){
+		term.push(triConsulta[t][0]);
+	}
+	//console.dir(term);
+	sim(term, "terminos_normal", triConsulta,cantidadTrigramas, triTokens.length);
+	//getDoc("terminos_normal");
 	return triConsulta;
 }
 
-function generaPesos(terminos, cantidad){
+function generaPesos(terminos, cantidad, terminos2, cantidad2){
+	var  document = {};
+	var tf = 0;
+	var idf = 0;
+	var tf_idf = 0;
+	var norma = 0;
+	var arrayDocument = [];
+	for(t in terminos){
+		tf = TF(terminos[t][1], cantidad);
+		//console.log("TF: " + tf);
+		if(myIndexOf(terminos[t][0], terminos2) !== -1){
+			idf = IDF(2/2);
+			
+			break;
+		}else{
+			idf = IDF(2/1);
+			
+		}
+		//console.log("IDF: " + idf);
+		//console.log(sqli[t][0]);
+		tf_idf = TF_IDF(tf, idf);
+		norma = norma + Math.pow(tf_idf, 2);
+		
+		//console.log("TF-IDF: " + tf_idf);
+		//console.log("Norma: " + norma);
+		document = {termino: terminos[t][0], cantidad: terminos[t][1], tf: tf, idf: idf, tf_idf: tf_idf, norma: 0};
+		arrayDocument.push(document);
+	}
+	norma = Math.sqrt(norma);
+	for(t in arrayDocument){
+		arrayDocument[t].norma = norma;
+	}
+
+	return arrayDocument;
 
 }
 
@@ -38,8 +78,77 @@ function myIndexOf(tokens, trigramas, pos){
 	return -1;
 }
 
-function sim(q, doc, callback){
+function myIndexOf2(tokens, trigramas){
+	//console.log("con pos");
+	var cont = 0;
+	var suma = 0;
+	var band = false;
+	if(trigramas.length > 0 ){
+		while(cont<trigramas.length){
+			if(tokens[0]===trigramas[cont].termino[0] && tokens[1]===trigramas[cont].termino[1] && tokens[2] === trigramas[cont].termino[2]){
+				
+				return cont;
+			}
+			cont = cont + 1;
+		}
+	}
 
+	return -1;
+}
+
+function semejanza(tokens, trigramas){
+	//console.log("con pos");
+	
+	var suma = 0;
+	var band = false;
+	if(trigramas.length > 0 ){
+		for(t in trigramas){
+			var cont = 0;
+			while(cont<trigramas.length){
+				if(tokens[cont].termino[0]===trigramas[t].termino[0] && tokens[cont].termino[1]===trigramas[t].termino[1] && tokens[cont].termino[2] === trigramas[t].termino[2]){
+					suma = suma + (tokens[cont].tf_idf * trigramas[t].tf_idf);
+					break;
+					//return cont;
+				}
+				cont = cont + 1;
+			}
+		}
+	}
+
+	return suma;
+}
+
+function sim(terminos, coleccion, triTokens, cantidad, c){
+	MongoClient.connect('mongodb://127.0.0.1:27017/demoTesis2', function(err, db){
+		if(err){
+			console.log(err);
+			throw err;
+		}else{
+			var col = db.collection(coleccion);
+			var q = { termino: { $in: terminos } };
+			col.find(q).toArray(function(err, resultado){
+			if(err){
+				console.log(err);
+				throw err;
+			}else{
+				db.close();
+				//console.log("resultados: " + resultado.length);
+				
+				var array = generaPesos(triTokens, cantidad, resultado, resultado.length);
+				var suma = semejanza(array, resultado);
+				console.log(resultado);
+				//console.log(cantidad);
+				console.log(suma);
+				var mult = array[0].norma * resultado[0].norma;
+				var res = suma/mult;
+				console.log(res);
+				//console.dir(resultado[0].suma);
+
+			}
+			
+		});
+		}
+	});
 }
 
 function getDoc(coleccion){
@@ -205,15 +314,6 @@ function IDF(documentos){
 	//idf = Math.log(documentos);
 	var idf = log2(2, documentos);
 	return idf;
-}
-
-function Norma(terminos){
-	var suma=0;
-	for(var t in terminos){
-		suma = suma + Math.pow(terminos[t],2);
-	}
-	var raiz = Math.sqrt(suma);
-	return raiz;
 }
 
 function log2(b, n) {

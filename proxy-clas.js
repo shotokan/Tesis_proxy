@@ -31,13 +31,15 @@ var server = http.createServer(function (request, response) {
       });
       request.on('end', function () {
         cabeceras = clasificar.peticionPost(request, body);
+        clasificar.clasificar(cabeceras);
         // use post['blah'], etc.
-        console.log(cabeceras);
+        //console.log(cabeceras);
       });
 
     }else{
       cabeceras = clasificar.peticionGet(request);
-      console.dir(clasificar.clasificar(cabeceras));
+      clasificar.clasificar(cabeceras);
+      //console.dir(clasificar.clasificar(cabeceras));
       //clasificar.clasificar(cabeceras);
     //  response.writeHead(200, { 'Content-Type': 'text/plain' });
       //response.end('Hello world!');

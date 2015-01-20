@@ -16,8 +16,8 @@ function guardarPeticion(request, contador, path){
   }
   fs.writeFile(nomb, cabeceras, 'utf8',function(error) {
     console.log("Cabeceras: Se ha escrito correctamente");
-   // generarDocNormal(cabeceras + " ");
-  generarDocSQLi(cabeceras + " ");
+   generarDocNormal(cabeceras + " ");
+  //generarDocSQLi(cabeceras + " ");
   });
    //console.log(norm.get_tokens(cabeceras));
 }
@@ -37,8 +37,8 @@ function guardarPeticionPost(request, contador, post, path){
    fs.writeFile(nomb, cabeceras, 'utf8',function(error) {
      console.log("Cabeceras: Se ha escrito correctamente");
      //generarDocNormal(cabeceras + " ");
-   //generarDocNormal(cabeceras + " ");
-   generarDocSQLi(cabeceras + " ");
+   generarDocNormal(cabeceras + " ");
+   //generarDocSQLi(cabeceras + " ");
    });
    //console.log(norm.get_tokens(cabeceras));
 }
